@@ -120,15 +120,23 @@ pagina_contato = Div(
 footer = Div(
     Div(
         P("""
-        2ª PROMOTORIA DE JUSTIÇA DA COMARCA DE CANGUARETAMA
-        Rua Princesa Isabel, nº 190, Centro, Canguaretama/RN. CEP 59.190-000.
-        Fone: (84) 9 9972-4630. E-mail: pmj.canguaretama@mprn.mp.br
+        PROMOTORIA DE JUSTIÇA DA COMARCA DE CANGUARETAMA        
         """,
         style={
             "text-align": "center",
-            "margin-bottom": "20px",
+            "margin-bottom": "5px",
             "color": "white"  # Texto branco
         }),
+        P("""
+            Rua Princesa Isabel, nº 190, Centro, Canguaretama/RN. CEP 59.190-000.
+            Fone: (84) 9 9972-4630. E-mail: pmj.canguaretama@mprn.mp.br
+            """,
+          style={
+              "text-align": "center",
+              "margin-bottom": "5px",
+              "color": "white"  # Texto branco
+          })
+        ,
         Div(
             A("Youtube", href='https://www.youtube.com/user/mprnimprensa', style={**anchor_css, "margin-right": "10px"}),
             A("Instagram", href='https://instagram.com/mprn_oficial', style={**anchor_css, "margin-right": "10px"}),
@@ -150,6 +158,44 @@ footer = Div(
     ),
     style=footer_css
 )
+
+
+def gerar_datalist_para_refeicao(identificador, alimentos_cadastrados, titulo_refeicao):
+    """
+    Gera um datalist e os campos de input de uma refeição (ex: café da manhã, almoço, lanche) com título.
+
+    :param identificador: Nome único para identificar os campos da refeição (ex: 'cafe', 'almoco', 'lanche').
+    :param alimentos_cadastrados: Lista de alimentos cadastrados no sistema para preencher o datalist.
+    :param titulo_refeicao: Texto que será exibido acima dos inputs e do datalist.
+    :return: Um Div contendo o título, os inputs e o datalist para a refeição.
+    """
+    print("dentro da func; imprimindo alimentos cadastrados:", alimentos_cadastrados)
+
+    # Criar o datalist com os alimentos cadastrados
+    datalist_id = f"datalist_{identificador}"
+    datalist = Datalist(*[Option(alimento) for alimento in alimentos_cadastrados], id=datalist_id)
+
+    # Mapear os nomes dos inputs de acordo com o identificador (cafe, almoco, lanche)
+    name_mapping = {
+        "cafe": ["alimentos_cafe_um", "alimentos_cafe_dois", "alimentos_cafe_tres", "alimentos_cafe_quatro", "alimentos_cafe_cinco", "alimentos_cafe_seis"],
+        "almoco": ["alimentos_almoco_um", "alimentos_almoco_dois", "alimentos_almoco_tres", "alimentos_almoco_quatro", "alimentos_almoco_cinco", "alimentos_almoco_seis"],
+        "lanche": ["alimentos_lanche_um", "alimentos_lanche_dois", "alimentos_lanche_tres", "alimentos_lanche_quatro", "alimentos_lanche_cinco", "alimentos_lanche_seis"]
+    }
+
+    # Gerar os inputs com os names corretos
+    inputs = [
+        Input(type="text", list=datalist_id, name=name, placeholder=f"Alimento {i + 1}")
+        for i, name in enumerate(name_mapping[identificador])
+    ]
+
+    # Criar um H1 acima dos inputs
+    h1 = H1(titulo_refeicao)
+
+    # Criar um label (título) acima dos inputs
+    titulo = Label(titulo_refeicao)
+
+    # Retornar os inputs, datalist e o título organizados lado a lado
+    return Div(h1, titulo, Div(*inputs, datalist, style={"display": "flex", "gap": "10px"}))
 
 
 def select_element(cardapio_itens):

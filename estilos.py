@@ -81,6 +81,21 @@ li_css = """
     "text-align": "center"  
 """
 
+li_css2 = """
+    list-style-type: none;  /* Remove o marcador padrão da lista */
+    padding: 10px;  /* Espaçamento interno */
+    margin: 10px;  /* Espaçamento externo */
+    background-color: #f0f0f0;  /* Cor de fundo suave */
+    border-radius: 8px;  /* Bordas arredondadas */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra leve */
+    font-size: 18px;  /* Tamanho da fonte */
+    color: #333;  /* Cor do texto */
+    font-weight: bold;  /* Texto em negrito */
+    "flex-direction": "column", 
+    "align-items": "center",            
+    "text-align": "center"  
+"""
+
 
 
 # CSS para o subtítulo
@@ -160,8 +175,56 @@ th_css = {
     "font-weight": "bold"
 }
 
+th_css_b_left = {
+    "background-color": "#f4f4f4",
+    'border-left': '1px solid #000',
+    'font-weight': 'bold;',
+}
+
+th_css_left = {
+    "background-color": "#f4f4f4",
+    'border-left': '1px solid #000',
+}
+
+th_css_grey = {
+    "background-color": "#f4f4f4",
+}
+
+
+
+
+th_css_b_right ={
+"background-color": "#f4f4f4",
+'border-right': '1px solid #000',
+'font-weight': 'bold;',
+}
+
+
+th_css_right ={
+"background-color": "#f4f4f4",
+'border-right': '1px solid #000',
+}
+
+
+
+
+th_css_b_right_left = {
+"background-color": "#f4f4f4",
+'border-right': '1px solid #000',
+'border-left': '1px solid #000',
+}
+
+th_titulo_refeicao_css = {
+"background-color": "#f4f4f4",
+"font-weight": "bold",
+'border-right': '1px solid #000',
+'border-left': '1px solid #000',
+'text-align': 'center'
+}
+
+
 td_css = {
-    "background-color": "#fff"
+"background-color": "#fff"
 }
 
 
@@ -233,3 +296,5 @@ flex-direction: column;
 width: 100%;
 margin-top: 250px;  /* Espaçamento aumentado para distanciar do nav */
 """
+
+img_style = "width: 50%; height: auto; margin: 20px auto; display: block;"

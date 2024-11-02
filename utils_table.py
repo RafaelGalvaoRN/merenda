@@ -2,10 +2,11 @@ from fasthtml.common import *
 from database import base_cardapio
 from estilos import *
 from datetime import datetime
+from utils import formatar_nutricao
 
 
+# cardapio_itens = base_cardapio()  # Carrega os dados diretamente do banco de dados
 
-Cardapio = base_cardapio.dataclass()
 
 
 
@@ -26,22 +27,70 @@ def create_form():
 
 
 def merenda_row(cardapio, index):
-    row_style = tbody_css + (row_even_css if index % 2 == 0 else "")
+    # Definir o estilo das linhas, alternando entre pares e ímpares
+    row_style = tbody_css + row_even_css
 
-    return Tr(
-        Td(cardapio.id, style=row_style),
-        Td(cardapio.escola, style=row_style),
-        Td(format_date(cardapio.data), style=row_style),  # Formata a data corretamente
-        Td(cardapio.alimentos_cafe, style=row_style),
-        Td(cardapio.alimentos_almoco, style=row_style),
-        Td(cardapio.alimentos_lanche, style=row_style),
+    valor_nutricional = formatar_nutricao(cardapio.exibir_nutricao())
 
-        id=f"client-{cardapio.id}"
-    )
+    # Retornar duas linhas: uma para os alimentos, outra para o valor nutricional
+    return [
+        # Primeira linha com os dados dos alimentos
+        Tr(
+            # Td(cardapio.id, style=row_style),
+            Td(cardapio.escola, style=row_style),
+            Td(format_date(cardapio.data), style=row_style),  # Formata a data corretamente
+
+            # Alimentos do Café da Manhã
+            Td(cardapio.alimentos_cafe_um, style=row_style),
+            Td(cardapio.alimentos_cafe_dois, style=row_style),
+            Td(cardapio.alimentos_cafe_tres, style=row_style),
+            Td(cardapio.alimentos_cafe_quatro, style=row_style),
+            Td(cardapio.alimentos_cafe_cinco, style=row_style),
+            Td(cardapio.alimentos_cafe_seis, style=row_style + 'border-right: 1px solid #000'),
+
+            # Alimentos do Almoço
+            Td(cardapio.alimentos_almoco_um, style=row_style),
+            Td(cardapio.alimentos_almoco_dois, style=row_style),
+            Td(cardapio.alimentos_almoco_tres, style=row_style),
+            Td(cardapio.alimentos_almoco_quatro, style=row_style),
+            Td(cardapio.alimentos_almoco_cinco, style=row_style),
+            Td(cardapio.alimentos_almoco_seis, style=row_style + 'border-right: 1px solid #000'),
+
+            # Alimentos do Lanche da Tarde
+            Td(cardapio.alimentos_lanche_um, style=row_style),
+            Td(cardapio.alimentos_lanche_dois, style=row_style),
+            Td(cardapio.alimentos_lanche_tres, style=row_style),
+            Td(cardapio.alimentos_lanche_quatro, style=row_style),
+            Td(cardapio.alimentos_lanche_cinco, style=row_style),
+            Td(cardapio.alimentos_lanche_seis, style=row_style + 'border-right: 1px solid #000'),
+
+
+        ),
+
+        # Segunda linha com os dados nutricionais (abaixo da linha principal)
+        Tr(
+            Td("Valor Nutricional", style="font-weight: bold;", colspan="2"),
+
+            Td(
+                Div(*valor_nutricional[0], style='padding: 10px;'),  # Exibe valor nutricional do café da manhã
+                colspan="6"
+            ),
+            Td(
+                Div(*valor_nutricional[1], style='padding: 10px;'),  # Exibe valor nutricional do almoço
+                colspan="6"
+            ),
+            Td(
+                Div(*valor_nutricional[2], style='padding: 10px;'),  # Exibe valor nutricional do lanche da tarde
+                colspan="6"
+            ),
+        )
+    ]
+
+
+
 
 def merenda_table(cardapio_items):
     # Verificar se os itens estão chegando corretamente
-
     if not cardapio_items:
         return Div(
             H2("Nenhum item disponível no cardápio."),
@@ -50,21 +99,59 @@ def merenda_table(cardapio_items):
 
     # Gerar a tabela apenas se houver dados
     return Table(
+        # Cabeçalho das Categorias
         Thead(
             Tr(
-                Th("ID", scope="col", style=th_css),
-                Th("Escola", scope="col", style=th_css),
-                Th("Data", scope="col", style=th_css),
-                Th("Lanche Matutino", scope="col", style=th_css),
-                Th("Almoço", scope="col", style=th_css),
-                Th("Lanche Vespertino", scope="col", style=th_css),
+                # Th("ID", scope="col", style=th_css, rowspan="2"),
+                Th("Escola", scope="col", style=th_css, rowspan="2"),
+                Th("Data", scope="col", style=th_css, rowspan="2"),
 
+                # Café da Manhã com borda divisória
+                Th("Café da Manhã", scope="col", style=th_titulo_refeicao_css, colspan="6"),
+
+                # Almoço com borda divisória
+                Th("Almoço", scope="col", style=th_titulo_refeicao_css, colspan="6"),
+
+                # Lanche da Tarde sem borda, pois é o último
+                Th("Lanche da Tarde", scope="col", style=th_titulo_refeicao_css, colspan="6"),
+            ),
+            Tr(
+                # Subcolunas para os alimentos de cada refeição
+                Th("Alimento", scope="col", style=th_css_b_left),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+
+                Th("Alimento", scope="col", style={**th_css, 'border-right': '1px solid #000'}),
+
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+
+                Th("Alimento", scope="col", style={**th_css, 'border-right': '1px solid #000'}),
+
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+                Th("Alimento", scope="col", style=th_css),
+
+                Th("Alimento", scope="col", style={**th_css, 'border-right': '1px solid #000'}),
             ),
             style=th_css
         ),
+
+        # Corpo da tabela com os dados
         Tbody(
-            *[merenda_row(item, index) for index, item in enumerate(cardapio_items)],  # Passar o índice da linha
+            *[row for index, item in enumerate(cardapio_items) for row in merenda_row(item, index)],
+            style="list-style-type: none; text-align: center; padding-left: 0;",
+    # Passar o índice da linha
+            # Passar o índice da linha
             id="cardapio-list"
         ),
         style=table_css
+
     )

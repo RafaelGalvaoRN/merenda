@@ -15,6 +15,29 @@ def generate_id(cardapio_items):
         return new_id
 
 
+def formatar_nutricao(nutricao):
+    print(nutricao)
+    print(type(nutricao))
+
+    # Se nutricao for None, retorna uma string indicando que não há dados
+    if nutricao is None:
+        return "Dados nutricionais indisponíveis."
+
+    # Cria uma lista de Ul com Li e Ol para cada refeição e seus nutrientes, removendo os bullets
+    partes = [
+        Ul(
+            Li(refeicao.upper(), style="list-style-type: none; padding-left: 0; text-align: center; font-weight: bold; "),
+            Ol(
+                *[Li(f"{nutriente.title()}: {valor}") for nutriente, valor in valores.items()],
+                style="list-style-type: none; padding-left: 0; text-align: center;"  # Remove os bullets e o espaçamento padrão
+            ),
+            style="list-style-type: none; padding-left: 0; text-align: center;"  # Remove os bullets da lista principal
+        )
+        for refeicao, valores in nutricao.items()
+    ]
+
+    return partes
+
 
 
 
@@ -26,19 +49,21 @@ def get_nav_element(logged_in_user):
             A("Início", href='/', style=anchor_css),
             A("Cardápio da Escola", href='/merenda', style=anchor_css),
             A("Escolas Participantes", href='/participantes', style=anchor_css),
+            A("Painel", href='/painel', style=anchor_css),
             A("Contatos", href='/contato', style=anchor_css),
             A("Área do Gestor", href='/gestor', style=anchor_css),
             A("Logout", href='/logout', style=anchor_css),
             style=navbar_css
         )
     else:
-        # Se o usuário não estiver autenticado, exibe o menu com a opção de login
         return Div(
             Img(src="img/logo-mprn.png", style=logo_mprn),
             A("Início", href='/', style=anchor_css),
             A("Cardápio da Escola", href='/merenda', style=anchor_css),
             A("Escolas Participantes", href='/participantes', style=anchor_css),
+            A("Painel", href='/painel', style=anchor_css),
             A("Contatos", href='/contato', style=anchor_css),
             A("Login", href='/login', style=anchor_css),
             style=navbar_css
         )
+        # Se o usuário não estiver autenticado, exibe o menu com a opção de login
