@@ -1,12 +1,23 @@
 landing_page_css = """
+flex-grow: 1;
+padding: 20px;
+background-color: #f4f4f4;
 display: flex;
 flex-direction: column;
-align-items: center;
-justify-content: center;
-height: 100vh;
-background-color: #f4f4f4;
-padding-top: 80px; /* Espaço extra para que o conteúdo não sobreponha a navbar */
+gap: 20px;
+align-items: center;            
+text-align: center;
 """
+
+landing_page_css2 = """
+display: grid;
+place-items: center; /* Centraliza o conteúdo horizontal e verticalmente */
+height: 80vh;
+background-color: #f4f4f4;
+padding-top: 20px; /* Espaço extra para que o conteúdo não sobreponha a navbar */
+gap: 10px; /* Espaçamento entre o H1 e a tabela */
+"""
+
 
 form_logout = """
 display: flex;
@@ -22,8 +33,9 @@ div_principal = """
 display: flex; 
 flex-direction: column;
 min-height: 100vh;
-justify-content: space-between;
+justify-content: flex-start;
 background-color: transparent;  /* Remove o fundo branco */
+padding-top: 80px; /* Compensa a altura da navbar fixa */
 
 """
 
@@ -39,8 +51,9 @@ align-items: center;
 background-color: #36768c!important;
 font-weight: bold;
 color: #fff;
-padding: 20px 120px 10px 120px;
+padding: 20px; /* Ajuste para responsividade */
 z-index: 1000; /* Garantir que a navbar fique sobre outros elementos */
+
 """
 
 anchor_css = {
@@ -66,34 +79,48 @@ text-align: center;
 margin-top: 120px;
 """
 
-li_css = """
-    list-style-type: none;  /* Remove o marcador padrão da lista */
-    padding: 10px;  /* Espaçamento interno */
-    margin: 5px 0;  /* Espaçamento externo */
-    background-color: #f0f0f0;  /* Cor de fundo suave */
-    border-radius: 8px;  /* Bordas arredondadas */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra leve */
-    font-size: 18px;  /* Tamanho da fonte */
-    color: #333;  /* Cor do texto */
-    font-weight: bold;  /* Texto em negrito */
-    "flex-direction": "column", 
-    "align-items": "center",            
-    "text-align": "center"  
+# CSS para o título principal
+titled_css_no_margin = """
+font-size: 48px;
+font-family: 'Roboto', sans-serif;
+color: #00420c;
+border-bottom: 2px solid #005fff;
+padding-bottom: 10px;
+text-align: center;
+margin-top: 120px;
 """
 
+li_css = """
+list-style-type: none;
+padding: 10px;
+margin: 5px 0;
+background-color: #f0f0f0;
+border-radius: 8px;
+box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+font-size: 18px;
+color: #333;
+font-weight: bold;
+
+width: 80%;
+flex-direction: column; 
+align-items: center;            
+text-align: center;  
+"""
+
+
 li_css2 = """
-    list-style-type: none;  /* Remove o marcador padrão da lista */
-    padding: 10px;  /* Espaçamento interno */
-    margin: 10px;  /* Espaçamento externo */
-    background-color: #f0f0f0;  /* Cor de fundo suave */
-    border-radius: 8px;  /* Bordas arredondadas */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra leve */
-    font-size: 18px;  /* Tamanho da fonte */
-    color: #333;  /* Cor do texto */
-    font-weight: bold;  /* Texto em negrito */
-    "flex-direction": "column", 
-    "align-items": "center",            
-    "text-align": "center"  
+list-style-type: none;  /* Remove o marcador padrão da lista */
+padding: 10px;  /* Espaçamento interno */
+margin: 10px;  /* Espaçamento externo */
+background-color: #f0f0f0;  /* Cor de fundo suave */
+border-radius: 8px;  /* Bordas arredondadas */
+box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  /* Sombra leve */
+font-size: 18px;  /* Tamanho da fonte */
+color: #333;  /* Cor do texto */
+font-weight: bold;  /* Texto em negrito */
+flex-direction: column; 
+align-items: center;            
+text-align: center;
 """
 
 
@@ -152,10 +179,12 @@ font-weight: bold;
 color: #fff;  
 padding: 10px;
 z-index: 1000; 
-"flex-direction": "column", 
-"align-items": "center",            
-"text-align": "center"  
-            
+flex-direction: column; 
+align-items: center;            
+text-align: center;  
+flex-shrink: 0;            
+margin-top: auto; /* Empurra o footer para o final da página */
+
 """
 
 table_css = {

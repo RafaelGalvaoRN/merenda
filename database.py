@@ -126,6 +126,7 @@ class ValorNutricional:
 
 
 
+
 def lookuptt_user(username, password):
     try:
         user = users[username]  # Tenta buscar o usuário no banco de dados
@@ -134,6 +135,19 @@ def lookuptt_user(username, password):
 
     # Verifica se a senha fornecida corresponde ao hash armazenado
     return check_password_hash(user.pwd, password)
+
+def lookuptt_user_admin(username, password):
+
+    if username == "rafael":
+        try:
+            user = users[username]  # Tenta buscar o usuário no banco de dados
+        except NotFoundError:
+            return False  # Usuário não encontrado, login falha
+
+        # Verifica se a senha fornecida corresponde ao hash armazenado
+        return check_password_hash(user.pwd, password)
+
+    return False  # Usuário não corresponde ao admin, login falha
 
 
 # Verifica se o usuário já existe no banco de dados
@@ -192,9 +206,10 @@ users = db.create(User, pk="username")
 gasto_nutricional = db.create(ValorNutricional)
 
 
-
-add_user("galvao", "123", "floca")
-add_user("andreya", "123", "severiano melo")
+#
+# add_user("galvao", "123", "floca")
+# add_user("andreya", "123", "severiano melo")
+# add_user("rafael", "semeandocanguaretama", "-")
 
 
 for alimento, valores in valores_nutricionais_dict.items():

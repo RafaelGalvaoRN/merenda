@@ -169,7 +169,6 @@ def gerar_datalist_para_refeicao(identificador, alimentos_cadastrados, titulo_re
     :param titulo_refeicao: Texto que será exibido acima dos inputs e do datalist.
     :return: Um Div contendo o título, os inputs e o datalist para a refeição.
     """
-    print("dentro da func; imprimindo alimentos cadastrados:", alimentos_cadastrados)
 
     # Criar o datalist com os alimentos cadastrados
     datalist_id = f"datalist_{identificador}"

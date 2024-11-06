@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from textos import conteudo
 from estilos import *
-from database import base_cardapio, users, lookuptt_user, coletar_alimentos_unicos
+from database import base_cardapio, users, lookuptt_user, lookuptt_user_admin, coletar_alimentos_unicos, add_user
 from elementos import nav_element, select_element, footer, pagina_contato, gerar_datalist_para_refeicao
 from utils_table import create_form, merenda_table, format_date
 from datetime import datetime
@@ -27,6 +27,7 @@ cardapio_itens = base_cardapio()  # Carrega os dados diretamente do banco de dad
 
 logged_in_user = None  # Variável global para rastrear se o usuário está autenticado
 usuario_autenticado = None
+admin_logged_in_user = None
 
 
 @app.route("/gestor", methods=["GET", "POST"])
@@ -88,7 +89,7 @@ def add_cardapio(id: int = None, escola: str = None, data: str = None,
 
 
 
-    # print("eita le le ")
+
     for item in cardapio_itens:
         # # Aqui você garante que cada item seja convertido para a classe controleCardapio
         # cardapio = controleCardapio(**item.__dict__)  # Transforma o dicionário do item em uma instância da sua classe
@@ -301,6 +302,7 @@ def delete(cardapio_id: int):
 
     # Remove o item da base de dados usando o ID fornecido
     try:
+
         base_cardapio.delete(cardapio_id)
         global cardapio_itens
         cardapio_itens = base_cardapio()
@@ -312,6 +314,26 @@ def delete(cardapio_id: int):
 
     # Retorna uma resposta vazia, que pode ser atualizada dinamicamente na interface
     return HTMLResponse("<tr></tr>")  # A remoção do <tr> pode ser feita via hx_swap ou JavaScript
+
+
+
+@app.route("/deletar_usuario/{usuario:str}")
+def delete(usuario: str):
+
+    # Remove o item da base de dados usando o ID fornecido
+    try:
+        users.delete(usuario)
+        global dados_gestor
+        dados_gestor = users()
+
+        print(f"Usuário {usuario} removido da base.")
+    except Exception as e:
+        print(f"Falha ao remover o usuário {usuario}: {e}")
+
+
+    # Retorna uma resposta vazia, que pode ser atualizada dinamicamente na interface
+    return HTMLResponse("<tr></tr>")  # A remoção do <tr> pode ser feita via hx_swap ou JavaScript
+
 
 
 # Rota de login simplificada
@@ -337,6 +359,127 @@ def contato():
     nav_element = get_nav_element(logged_in_user)
 
     return Div(nav_element, pagina_contato, footer, style=div_principal)
+
+
+@app.route("/admin_login", methods=["GET", "POST"])
+def admin_login(username: str = None, password: str = None):
+    global admin_logged_in_user
+    global logged_in_user
+
+    nav_element = get_nav_element(logged_in_user)
+
+    if username and password:
+
+        if lookuptt_user_admin(username, password):
+            admin_logged_in_user = username  # Usuário autenticado
+
+            return RedirectResponse(url="/admin_painel")
+
+
+        else:
+            return Div(
+                nav_element,
+                H1("Login", style=h1_login),
+                H1("Credenciais Admin Inválidas", style=h1_credencial_invalida),
+                Form(
+                    Input(name="username", placeholder="Nome de usuário", type="text"),
+                    Input(name="password", placeholder="Senha", type="password"),
+                    Button("Entrar", type="submit"),
+                    method="post",
+                    style=form_logout
+                ),
+                footer,
+                style=div_principal
+            )
+
+    return Div(
+        nav_element,
+        H1("Login Admin", style=h1_login),
+        Form(
+            Input(name="username", placeholder="Nome de usuário", type="text"),
+            Input(name="password", placeholder="Senha", type="password"),
+            Button("Entrar", type="submit"),
+            method="post",
+            style=form_logout
+        ),
+        footer,
+        style=div_principal
+    )
+
+
+
+@app.route("/admin_painel", methods=["GET", "POST"])
+def admin_painel(username: str = None, password: str = None,
+                 usuario: str = None, escola: str = None,
+                 senha:str = None, form_submitted: str = None):
+
+
+   global dados_gestor
+
+   if not admin_logged_in_user:
+       return RedirectResponse(url="/admin_login")  # Redireciona para a página de login se não autenticado
+
+
+   if form_submitted == "true" and usuario and escola and senha:
+       add_user(usuario, senha, escola)
+       dados_gestor = users()
+
+       print("USUÁRIO CADASTRADO:", usuario, escola, senha)
+
+
+   nav_element = get_nav_element(logged_in_user)
+
+   table_rows = [(Tr
+                (Td(usuario.username, style=th_css_grey),
+                (Td(usuario.escola, style=th_css_grey),
+                 Td(
+                     Button("Delete",
+                            hx_delete=f"/deletar_usuario/{usuario.username}",
+                            hx_confirm="Tem certeza que deseja deletar?",  # Mensagem de confirmação
+                            hx_swap="outerHTML",
+                            id=f"delete-{usuario.username}",
+
+                            )
+                     , style=th_css_grey),
+                 ))) for usuario in dados_gestor]
+
+   return Div(
+       nav_element,
+       Div(
+           H1("Cadastrar Usuário", style=titled_css),
+           Form(
+               Input(name="usuario", type="text", placeholder="Usuário", required=True),
+               Input(name="escola", type="text", placeholder="Escola", required=True),
+               Input(name="senha", type="text", placeholder="Senha", required=True),
+               Input(name="form_submitted", type="hidden", value="true"),  # Campo oculto que indica submissão
+
+               Button("Adicionar Usuário", type="submit",
+                      style="padding: 12px 20px; border: none; border-radius: 4px; font-size: 16px;"),
+               method="post",
+               action="/admin_painel",
+               style="display: flex; flex-direction: column; gap: 15px; width: 50%;"
+           ),
+           style=landing_page_css
+       ),
+       # Adiciona a tabela após o formulário
+
+       Div(
+           H1("Usuários na base", style=titled_css_no_margin),
+           Table(
+               Tr(
+                   Th("Nome", style=th_css),
+                   Th("Escola", style=th_css),
+                   Th("Deletar", style=th_css),
+               ),
+               *table_rows,
+               style="width: 50%;"
+
+           ),
+           style=landing_page_css2,
+       ),
+       footer,
+       style=div_principal
+   )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -405,7 +548,6 @@ def painel(escola: str = None):
 
         for item in cardapio_filtrado:
             date = item.data
-            print(f"date: {date}" )
 
             nutrition = item.calcular_nutricao_total_dia()
             nutrition["date"] = date
@@ -537,13 +679,13 @@ def participantes():
         nav_element,
         Div(
             H1("Escolas Participantes", style=titled_css),
-            Ul(*participantes_list, style=li_css),  # Seção 1: Lista de participantes
+            Ul(*participantes_list),  # Seção 1: Lista de participantes
 
             H2("Última Data de Envio por Escola Participante", style=titled_css),
-            Ul(*ultima_data_list, style=li_css),  # Seção 2: Última data de envio
+            Ul(*ultima_data_list),  # Seção 2: Última data de envio
 
             H2("Todas as Datas de Envio por Escola Participante", style=titled_css),
-            Ul(*todas_datas_list, style=li_css2),  # Seção 3: Todas as datas de envio
+            Ul(*todas_datas_list),  # Seção 3: Todas as datas de envio
 
             style=landing_page_css
         ),

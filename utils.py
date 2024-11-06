@@ -16,8 +16,6 @@ def generate_id(cardapio_items):
 
 
 def formatar_nutricao(nutricao):
-    print(nutricao)
-    print(type(nutricao))
 
     # Se nutricao for None, retorna uma string indicando que não há dados
     if nutricao is None:
@@ -45,7 +43,11 @@ def get_nav_element(logged_in_user):
     if logged_in_user:
         # Se o usuário estiver autenticado, exibe o menu com a opção de logout
         return Div(
-            Img(src="img/logo-mprn.png", style=logo_mprn),
+            A(
+                Img(src="img/logo-mprn.png", style=logo_mprn),
+                href='/admin_login',
+                style=anchor_css
+            ),
             A("Início", href='/', style=anchor_css),
             A("Cardápio da Escola", href='/merenda', style=anchor_css),
             A("Escolas Participantes", href='/participantes', style=anchor_css),
@@ -57,8 +59,11 @@ def get_nav_element(logged_in_user):
         )
     else:
         return Div(
-            Img(src="img/logo-mprn.png", style=logo_mprn),
-            A("Início", href='/', style=anchor_css),
+            A(
+                Img(src="img/logo-mprn.png", style=logo_mprn),
+                href='/admin_login',
+                style=anchor_css
+            ),            A("Início", href='/', style=anchor_css),
             A("Cardápio da Escola", href='/merenda', style=anchor_css),
             A("Escolas Participantes", href='/participantes', style=anchor_css),
             A("Painel", href='/painel', style=anchor_css),
