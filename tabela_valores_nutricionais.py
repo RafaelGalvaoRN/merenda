@@ -5,6 +5,8 @@ valores_nutricionais_dict = {
     'macarrao': {'calorias': 120, 'proteinas': 3, 'carboidratos': 25, 'gorduras': 0.5},
     'pao': {'calorias': 265, 'proteinas': 9, 'carboidratos': 49, 'gorduras': 3.2},
     'farinha de mandioca': {'calorias': 365, 'proteinas': 2, 'carboidratos': 80.4, 'gorduras': 1},
+    'pao integral': {'calorias': 252, 'proteinas': 13, 'carboidratos': 43, 'gorduras': 4.2},
+
 
     # Proteínas animais
     'carne': {'calorias': 250, 'proteinas': 26, 'carboidratos': 0, 'gorduras': 15},
@@ -26,6 +28,8 @@ valores_nutricionais_dict = {
     'laranja': {'calorias': 47, 'proteinas': 0.9, 'carboidratos': 11.8, 'gorduras': 0.1},
     'abacaxi': {'calorias': 50, 'proteinas': 0.5, 'carboidratos': 13.1, 'gorduras': 0.1},
     'mamão': {'calorias': 43, 'proteinas': 0.5, 'carboidratos': 10.8, 'gorduras': 0.1},
+    'manga': {'calorias': 60, 'proteinas': 0.8, 'carboidratos': 15, 'gorduras': 0.4},
+    'kiwi': {'calorias': 61, 'proteinas': 1.1, 'carboidratos': 14.7, 'gorduras': 0.5},
 
     # Bebidas
     'suco de laranja': {'calorias': 45, 'proteinas': 0.7, 'carboidratos': 10.4, 'gorduras': 0.2},
@@ -36,7 +40,12 @@ valores_nutricionais_dict = {
     # Lanches e complementos
     'biscoito salgado': {'calorias': 502, 'proteinas': 6.8, 'carboidratos': 64, 'gorduras': 23},
     'bolo de cenoura': {'calorias': 400, 'proteinas': 4.3, 'carboidratos': 58.8, 'gorduras': 15},
+    'bolo de aveia e mel': {'calorias': 350, 'proteinas': 6, 'carboidratos': 58, 'gorduras': 10},
     'pipoca': {'calorias': 387, 'proteinas': 13, 'carboidratos': 78, 'gorduras': 4.5},
     'iogurte': {'calorias': 59, 'proteinas': 10, 'carboidratos': 3.6, 'gorduras': 0.4},
-    'barrinha de cereais': {'calorias': 120, 'proteinas': 2, 'carboidratos': 22, 'gorduras': 2.5}
+    'barrinha de cereais': {'calorias': 120, 'proteinas': 2, 'carboidratos': 22, 'gorduras': 2.5},
+
+    # outros
+    'pure de abobora': {'calorias': 45, 'proteinas': 1, 'carboidratos': 10, 'gorduras': 0.1}
+
 }

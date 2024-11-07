@@ -1,8 +1,22 @@
 from fasthtml.common import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from tabela_valores_nutricionais import valores_nutricionais_dict
+import os
 
-db = database('data/controle_cardapio.db')
+
+
+enviroment = os.getenv('database_enviroment', 'local')
+
+if enviroment == "render":
+    db_path = '/opt/render/persistent/controle_cardapio.db'
+
+else:
+    db_path = 'data/controle_cardapio.db'
+
+
+db = database(db_path)
+
+
 
 class controleCardapio:
     id: int;
@@ -262,17 +276,17 @@ def coletar_alimentos_unicos(cardapio_itens):
 
 
 
+if not base_cardapio.exists():
+    base_cardapio = db.create(controleCardapio)
+
+if not users.exists():
+    users = db.create(User, pk="username")
+
+if not gasto_nutricional.exists():
+    gasto_nutricional = db.create(ValorNutricional)
 
 
-base_cardapio = db.create(controleCardapio)
-users = db.create(User, pk="username")
-gasto_nutricional = db.create(ValorNutricional)
 
-
-#
-# add_user("galvao", "123", "floca")
-# add_user("andreya", "123", "severiano melo")
-# add_user("rafael", "semeandocanguaretama", "-")
 
 
 for alimento, valores in valores_nutricionais_dict.items():
