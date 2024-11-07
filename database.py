@@ -241,16 +241,20 @@ def user_exists(username):
 def add_user(username, password, escola):
     if not user_exists(username):
         hashed_pwd = generate_password_hash(password)  # Cria o hash da senha
-        print(f"Inserindo usuário com escola: {escola}")  # Verifica o valor de escola
+        # print(f"Inserindo usuário com escola: {escola}")  # Verifica o valor de escola
 
         try:
             # Tenta inserir o usuário
             users.insert(username=username, pwd=hashed_pwd, escola=escola)
-            print(f"Usuário '{username}' adicionado com sucesso!")
+            return
+            # print(f"Usuário '{username}' adicionado com sucesso!")
         except Exception as e:
             print(f"Erro ao adicionar o usuário '{username}': {e}")
+            return
     else:
-        print(f"Usuário '{username}' já existe no banco de dados.")
+        # print(f"Usuário '{username}' já existe no banco de dados.")
+        return
+
 
 
 def coletar_alimentos_unicos(cardapio_itens):
@@ -278,6 +282,8 @@ def coletar_alimentos_unicos(cardapio_itens):
 base_cardapio = db.create(controleCardapio, if_not_exists=True)
 users = db.create(User, pk="username", if_not_exists=True)
 gasto_nutricional = db.create(ValorNutricional, if_not_exists=True)
+
+add_user("rafael", "semeandocanguaretama", "-")
 
 
 
