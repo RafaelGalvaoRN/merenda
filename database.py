@@ -106,6 +106,69 @@ class controleCardapio:
 
         return total_nutricional
 
+    def avaliar_cardapio(self):
+        # Valores nutricionais totais do dia
+        total_nutricional = self.calcular_nutricao_total_dia()
+        calorias_totais = total_nutricional["calorias"]
+        proteinas_totais = total_nutricional["proteinas"]
+        carboidratos_totais = total_nutricional["carboidratos"]
+        gorduras_totais = total_nutricional["gorduras"]
+
+        # Recomendações nutricionais diárias
+        calorias_recomendadas = 2000  # kcal
+        faixa_carboidratos = (0.45, 0.65)  # 45-65%
+        faixa_proteinas = (0.10, 0.30)  # 10-30%
+        faixa_gorduras = (0.25, 0.35)  # 25-35%
+
+        # Converte gramas em calorias
+        calorias_proteinas = proteinas_totais * 4
+        calorias_carboidratos = carboidratos_totais * 4
+        calorias_gorduras = gorduras_totais * 9
+
+        # Calcula o percentual de cada macronutriente
+        percentual_proteinas = calorias_proteinas / calorias_totais
+        percentual_carboidratos = calorias_carboidratos / calorias_totais
+        percentual_gorduras = calorias_gorduras / calorias_totais
+
+        nota = 0
+        max_nota = 10
+
+        # Avaliação das calorias totais (até 4 pontos)
+        if calorias_totais >= calorias_recomendadas * 0.9 and calorias_totais <= calorias_recomendadas * 1.1:
+            nota += 4  # Dentro da faixa ideal
+        elif calorias_totais >= calorias_recomendadas * 0.8 and calorias_totais <= calorias_recomendadas * 1.2:
+            nota += 2  # Leve desvio
+        else:
+            nota += 0  # Desvio significativo
+
+        # Avaliação dos macronutrientes (até 6 pontos)
+        pontos_macros = 0
+
+        # Proteínas (2 pontos)
+        if faixa_proteinas[0] <= percentual_proteinas <= faixa_proteinas[1]:
+            pontos_macros += 2
+        elif (faixa_proteinas[0] - 0.05) <= percentual_proteinas <= (faixa_proteinas[1] + 0.05):
+            pontos_macros += 1
+
+        # Carboidratos (2 pontos)
+        if faixa_carboidratos[0] <= percentual_carboidratos <= faixa_carboidratos[1]:
+            pontos_macros += 2
+        elif (faixa_carboidratos[0] - 0.05) <= percentual_carboidratos <= (faixa_carboidratos[1] + 0.05):
+            pontos_macros += 1
+
+        # Gorduras (2 pontos)
+        if faixa_gorduras[0] <= percentual_gorduras <= faixa_gorduras[1]:
+            pontos_macros += 2
+        elif (faixa_gorduras[0] - 0.05) <= percentual_gorduras <= (faixa_gorduras[1] + 0.05):
+            pontos_macros += 1
+
+        nota += pontos_macros
+
+        # Arredonda a nota final
+        nota_final = round(nota, 1)
+        return nota_final
+
+
 
 class User:
     username: str

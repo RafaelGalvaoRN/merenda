@@ -223,7 +223,7 @@ def add_cardapio(id: int = None, escola: str = None, data: str = None,
                 Input(name="form_submitted", type="hidden", value="true"),  # Campo oculto que indica submissão
 
                 H1("Data do Cardápio"),
-                Input(name="data", type="date", placeholder="Data da refeição", required=False,
+                Input(name="data", type="date", placeholder="Data da refeição", required=True,
                       style="margin-bottom: 15px; width: 100%; padding: 12px 15px; font-size: 16px;"),
                 Div(gerar_datalist_para_refeicao("cafe", alimentos_cadastrados, "Café da Manhã"),
                     gerar_datalist_para_refeicao("almoco", alimentos_cadastrados, "Almoço"),
@@ -540,9 +540,12 @@ def logout():
 @app.route("/painel", methods=["GET", "POST"])
 def painel(escola: str = None):
     nav_element = get_nav_element(logged_in_user)
+    nota_final = None
 
     if escola:
         cardapio_filtrado = [item for item in cardapio_itens if item.escola == escola]
+
+        notas_diarias = []
 
         nutrition_data = []
 
@@ -552,6 +555,18 @@ def painel(escola: str = None):
             nutrition = item.calcular_nutricao_total_dia()
             nutrition["date"] = date
             nutrition_data.append(nutrition)
+
+            # Avalia o cardápio do dia e armazena a nota
+            nota_dia = item.avaliar_cardapio()
+            notas_diarias.append(nota_dia)
+
+        if notas_diarias:
+            # Calcula a nota final da escola
+            nota_final = sum(notas_diarias) / len(notas_diarias)
+            nota_final = round(nota_final, 2)
+        else:
+            nota_final = 0  # Se não houver notas, a nota final é 0
+
 
         if nutrition_data:
 
@@ -600,31 +615,61 @@ def painel(escola: str = None):
     else:
         img_element = P("Por favor, selecione uma escola para visualizar os dados", style=titled_css)
 
-    return Div(
-        nav_element,
-        Div(
-            H1("Painel", style=titled_css),
-            Form(
-                Input(
-                    type="text",
-                    list="escolas",  # Associa o datalist ao input
-                    name="escola",  # Certifique-se de que o name seja correto
-                    placeholder="Digite ou selecione a escola",
-                    style=select_css  # Aqui, 'select_css' pode ser ajustado para um estilo de input mais apropriado
-                ),
-                Datalist(
-                    *[Option(escola_item, value=escola_item) for escola_item in
-                      {item.escola for item in cardapio_itens}],
-                    id="escolas"  # O id deve corresponder ao valor do atributo 'list' no input
-                ),
-                Button("Filtrar", type="submit", style="margin-top: 10px;"),  # Botão de submit tradicional
-                method="post",  # Método POST para enviar os dados
-                style="margin: 20px;"
-            ), style=form_container_css),
+    if nota_final:
+        return Div(
+            nav_element,
+            Div(
+                H1("Painel", style=titled_css),
+                Form(
+                    Input(
+                        type="text",
+                        list="escolas",  # Associa o datalist ao input
+                        name="escola",  # Certifique-se de que o name seja correto
+                        placeholder="Digite ou selecione a escola",
+                        style=select_css  # Aqui, 'select_css' pode ser ajustado para um estilo de input mais apropriado
+                    ),
+                    Datalist(
+                        *[Option(escola_item, value=escola_item) for escola_item in
+                          {item.escola for item in cardapio_itens}],
+                        id="escolas"  # O id deve corresponder ao valor do atributo 'list' no input
+                    ),
+                    Button("Filtrar", type="submit", style="margin-top: 10px;"),  # Botão de submit tradicional
+                    method="post",  # Método POST para enviar os dados
+                    style="margin: 20px;"
+                ), style=form_container_css),
+            H1(f"Nota Nutricional da Escola {escola.upper()}: {nota_final}", style=titled_css),
+
             img_element,
-        footer,
-        style=div_principal
-    )
+            footer,
+            style=div_principal
+        )
+
+    else:
+        return Div(
+            nav_element,
+            Div(
+                H1("Painel", style=titled_css),
+                Form(
+                    Input(
+                        type="text",
+                        list="escolas",  # Associa o datalist ao input
+                        name="escola",  # Certifique-se de que o name seja correto
+                        placeholder="Digite ou selecione a escola",
+                        style=select_css  # Aqui, 'select_css' pode ser ajustado para um estilo de input mais apropriado
+                    ),
+                    Datalist(
+                        *[Option(escola_item, value=escola_item) for escola_item in
+                          {item.escola for item in cardapio_itens}],
+                        id="escolas"  # O id deve corresponder ao valor do atributo 'list' no input
+                    ),
+                    Button("Filtrar", type="submit", style="margin-top: 10px;"),  # Botão de submit tradicional
+                    method="post",  # Método POST para enviar os dados
+                    style="margin: 20px;"
+                ), style=form_container_css),
+            img_element,
+            footer,
+            style=div_principal
+        )
 
 
 
