@@ -274,18 +274,10 @@ def coletar_alimentos_unicos(cardapio_itens):
     return alimentos_unicos
 
 
-
-
-if not base_cardapio.exists():
-    base_cardapio = db.create(controleCardapio)
-
-if not users.exists():
-    users = db.create(User, pk="username")
-
-if not gasto_nutricional.exists():
-    gasto_nutricional = db.create(ValorNutricional)
-
-
+# Garante que as tabelas existam ou sejam criadas se não existirem
+base_cardapio = db.create(controleCardapio, if_not_exists=True)
+users = db.create(User, pk="username", if_not_exists=True)
+gasto_nutricional = db.create(ValorNutricional, if_not_exists=True)
 
 
 
